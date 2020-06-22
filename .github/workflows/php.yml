@@ -27,7 +27,7 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Run linter
-      run: php vendor/bin/phpstan analyse
+      run: phpstan analyse --error-format=checkstyle | cs2pr
 
     - name: Run test suite
-      run: php vendor/bin/phpunit
+      run: phpunit
