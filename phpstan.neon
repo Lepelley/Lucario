@@ -1,0 +1,10 @@
+parameters:
+  level: 8
+  paths:
+    - src
+    - app
+    - tests
+  excludes_analyse:
+    - src/Migrations/*
+  checkGenericClassInNonGenericObjectType: false
+  checkMissingIterableValueType: false

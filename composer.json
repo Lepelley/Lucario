@@ -1,0 +1,37 @@
+{
+    "name": "lepelley/lucario",
+    "description": "Framework",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+      {
+        "name": "Vincent Lepelley",
+        "email": "vincent@lepelley.fr"
+      }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+      "psr-4": {
+        "Lucario\\": "src/"
+      }
+    },
+    "autoload-dev": {
+      "psr-4": {
+        "Lucario\\Tests\\": "tests/"
+      }
+    },
+    "scripts": {
+      "lint": ".\\vendor\\bin\\phpstan analyse --ansi",
+      "tests": ".\\vendor\\bin\\phpunit --color=always",
+      "coverage": "vendor\\bin\\phpunit --coverage-html var\\logs\\coverage"
+    },
+  "require": {
+    "nikic/fast-route": "^1.3",
+    "twig/twig": "^3.0",
+    "symfony/dotenv": "^5.1"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^0.12.30",
+    "phpunit/phpunit": "^9.2"
+  }
+}
