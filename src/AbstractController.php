@@ -12,7 +12,7 @@ class AbstractController
 
     public function __construct()
     {
-        $loader = new FilesystemLoader(dirname(__DIR__, 2) . '/templates');
+        $loader = new FilesystemLoader(dirname(__DIR__, 4) . '/templates');
         $this->templateEngine = new Environment($loader);
     }
 
