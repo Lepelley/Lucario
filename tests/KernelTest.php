@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Lucario;
+namespace Lucario\Tests;
 
 use Lucario\Kernel;
 use Lucario\Router;

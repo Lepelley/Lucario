@@ -82,8 +82,8 @@ class Router
                 } else {
                     throw new \Exception(sprintf('Not callable'));
                 }
-            default:
-                throw new \Exception(sprintf('New dispatcher case'));
+//            default:
+//                throw new \Exception(sprintf('New dispatcher case'));
         }
     }
 }
