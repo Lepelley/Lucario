@@ -24,10 +24,12 @@ jobs:
 
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer install --no-dev --prefer-dist --no-progress --no-suggest
+      run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Run linter
-      run: phpstan analyse --error-format=checkstyle
+#      run: phpstan analyse --error-format=checkstyle
+      run: composer lint
 
     - name: Run test suite
-      run: phpunit
+#      run: phpunit
+      run: composer tests
