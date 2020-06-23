@@ -23,8 +23,10 @@
     },
     "scripts": {
       "lint": ".\\vendor\\bin\\phpstan analyse --ansi",
+      "lint-ci": "/vendor/bin/phpstan analyse",
       "tests": ".\\vendor\\bin\\phpunit --color=always",
-      "coverage": "vendor\\bin\\phpunit --coverage-html var\\logs\\coverage"
+      "tests-ci": "/vendor/bin/phpunit",
+      "coverage": ".\\vendor\\bin\\phpunit --coverage-html var\\logs\\coverage"
     },
   "require": {
     "nikic/fast-route": "^1.3",
