@@ -21,4 +21,9 @@ class AbstractController
     {
         return $this->templateEngine->render($view.'.html.twig', $vars);
     }
+
+    protected function isSubmitted(): bool
+    {
+        return sizeof($_POST) > 0;
+    }
 }
