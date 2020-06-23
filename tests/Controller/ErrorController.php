@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use Lucario\AbstractController;
+use Lucario\Controller\AbstractController;
 
 class ErrorController extends AbstractController
 {

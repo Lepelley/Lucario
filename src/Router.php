@@ -77,11 +77,11 @@ class Router
                     $method = $routeInfo[1];
                 }
                 // on execute avec call_user_func_array
-                if (is_callable($method)) {
-                    return call_user_func_array($method, $routeInfo[2]);
+                if (false === is_callable($method)) {
+                    throw new \Exception(sprintf('Not callable'));
                 }
 
-                throw new \Exception(sprintf('Not callable'));
+                return call_user_func_array($method, $routeInfo[2]);
         }
     }
 }

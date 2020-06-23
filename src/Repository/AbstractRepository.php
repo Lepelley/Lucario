@@ -2,7 +2,7 @@
 
 namespace Lucario\Repository;
 
-use App\Database\DatabaseException;
+use Lucario\Database\DatabaseException;
 
 abstract class AbstractRepository
 {
@@ -20,11 +20,11 @@ abstract class AbstractRepository
     /**
      * @param array<string,mixed> $data
      *
-     * @return int ID of the created entity
+     * @return int|string ID of the created entity
      *
      * @throws DatabaseException
      */
-    public function create(array $data): int
+    public function create(array $data)
     {
         $values = \implode(', ', \array_map(fn ($key) => ":$key", \array_keys($data)));
 

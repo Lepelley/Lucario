@@ -7,7 +7,7 @@ class ConnectionMySQL
     private static ?\PDO $pdo = null;
 
     /**
-     * @param array<string,array<string,string>> $credentials
+     * @param array<string,string> $credentials
      *
      * @return \PDO
      *
@@ -19,10 +19,6 @@ class ConnectionMySQL
         $login = isset($credentials['LOGIN']) ? $credentials['LOGIN'] : '';
         $password = isset($credentials['PASSWORD']) ? $credentials['PASSWORD'] : '';
 
-        if ('' === $dsn || '' === $login) {
-            throw new DatabaseException('Bad credentials');
-        }
-
         if (null === self::$pdo) {
             try {
                 self::$pdo = new \PDO(
@@ -30,8 +26,8 @@ class ConnectionMySQL
                     $login,
                     $password,
                     [
-                        \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION,
                         \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                        \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION,
                     ]
                 );
             } catch (\Exception $error) {
