@@ -79,11 +79,9 @@ class Router
                 // on execute avec call_user_func_array
                 if (is_callable($method)) {
                     return call_user_func_array($method, $routeInfo[2]);
-                } else {
-                    throw new \Exception(sprintf('Not callable'));
                 }
-//            default:
-//                throw new \Exception(sprintf('New dispatcher case'));
+
+                throw new \Exception(sprintf('Not callable'));
         }
     }
 }
