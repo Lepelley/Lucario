@@ -22,9 +22,9 @@ jobs:
         tools: phpunit, phpstan
         coverage: none
 
-#    - name: Install dependencies
-#      if: steps.composer-cache.outputs.cache-hit != 'true'
-#      run: composer install --prefer-dist --no-progress --no-suggest
+    - name: Install dependencies
+      if: steps.composer-cache.outputs.cache-hit != 'true'
+      run: composer install --no-dev --prefer-dist --no-progress --no-suggest
 
     - name: Run linter
       run: phpstan analyse --error-format=checkstyle
