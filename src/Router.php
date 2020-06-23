@@ -28,11 +28,11 @@ class Router
      * @param string $uri
      * @param string $method
      *
-     * @return string
+     * @return mixed
      *
      * @throws \Exception
      */
-    public function dispatch(string $uri, string $method): string
+    public function dispatch(string $uri, string $method)
     {
         $dispatcher = FastRoute\simpleDispatcher($this->routes);
 
