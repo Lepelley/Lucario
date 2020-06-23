@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace Lucario\Repository;
 
 use App\Database\DatabaseException;
 
