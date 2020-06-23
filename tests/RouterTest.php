@@ -9,6 +9,7 @@ use Twig\Error\LoaderError;
 
 class RouterTest extends TestCase
 {
+
     public function testRouteWithoutParams(): void
     {
         $router = $this->getRouter();
@@ -21,19 +22,37 @@ class RouterTest extends TestCase
         $this->assertSame('Home test', $router->dispatch('/?params', 'GET'));
     }
 
-    public function testRouteWithWrongPath(): void
+    /**
+     * @runInSeparateProcess
+     */
+    public function testRouteWithWrongPathWithController(): void
     {
+        define('TEMPLATE_PATH', __DIR__.DIRECTORY_SEPARATOR.'templates');
         $router = $this->getRouter();
-        $this->expectException(LoaderError::class);
-        $router->dispatch('/doesnt-exist', 'GET');
+        $this->assertSame('error 404', $router->dispatch('/doesnt-exist', 'GET'));
     }
 
-    public function testRouteWithBadMethod(): void
+    /**
+     * @runInSeparateProcess
+     */
+    public function testRouteWithBadMethodWithController(): void
     {
+        define('TEMPLATE_PATH', __DIR__.DIRECTORY_SEPARATOR.'templates');
         $router = $this->getRouter();
-        $this->expectException(LoaderError::class);
-        $router->dispatch('/', 'FAKE');
+        $this->assertSame('error 405', $router->dispatch('/', 'FAKE'));
     }
+
+//    public function testRouteWithWrongPathWithControllerWithNoExistingMethod(): void
+//    {
+//        $router = $this->getRouter();
+//        $this->assertSame('Error 404 : Not Found', $router->dispatch('/test-no-method', 'GET'));
+//    }
+//
+//    public function testRouteWithBadMethodWithControllerWithNoExistingMethod(): void
+//    {
+//        $router = $this->getRouter();
+//        $this->assertSame('Error 405 : Forbidden method', $router->dispatch('/test-no-method', 'FAKE'));
+//    }
 
     public function testRouteWithController(): void
     {
@@ -41,7 +60,7 @@ class RouterTest extends TestCase
         $this->assertSame('Controller test', $router->dispatch('/controller', 'GET'));
     }
 
-    public function testRouteCanThrowException(): void
+    public function testRouteWithControllerWithWrongFunction(): void
     {
         $router = $this->getRouter();
         $this->expectException(\Exception::class);
@@ -56,6 +75,7 @@ class RouterTest extends TestCase
             });
             $router->get('/controller', 'Lucario\Tests\MyController::print');
             $router->get('/controllerException', 'Lucario\Tests\MyController::printError');
+            $router->get('/test-no-method', 'Lucario\Tests\MyController::printNoExisting');
         });
     }
 }

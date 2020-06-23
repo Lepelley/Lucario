@@ -44,20 +44,20 @@ class Router
 
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                return (new class extends AbstractController {
-                    public function print() : string
-                    {
-                        return $this->render('errors/404');
-                    }
-                })->print();
+                if (method_exists('App\Controller\ErrorController', 'notFound')) {
+                    return call_user_func([new \App\Controller\ErrorController(), 'notFound']);
+                } else {
+                    http_response_code(404);
+                    return 'Error 404 : Not Found';
+                }
             case Dispatcher::METHOD_NOT_ALLOWED:
                 $allowedMethods = $routeInfo[1];
-                return (new class extends AbstractController {
-                    public function print() : string
-                    {
-                        return $this->render('errors/405');
-                    }
-                })->print();
+                if (method_exists('App\Controller\ErrorController', 'methodForbidden')) {
+                    return call_user_func([new \App\Controller\ErrorController(), 'methodForbidden']);
+                } else {
+                    http_response_code(405);
+                    return 'Error 405 : Forbidden method';
+                }
             case Dispatcher::FOUND:
                 // Je vérifie si mon parametre est une chaine de caractere
                 $method = [];
