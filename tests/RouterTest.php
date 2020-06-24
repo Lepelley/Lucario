@@ -5,7 +5,6 @@ namespace Lucario\Tests;
 use FastRoute\RouteCollector;
 use Lucario\Router;
 use PHPUnit\Framework\TestCase;
-use Twig\Error\LoaderError;
 
 class RouterTest extends TestCase
 {
@@ -41,18 +40,6 @@ class RouterTest extends TestCase
         $router = $this->getRouter();
         $this->assertSame('error 405', $router->dispatch('/', 'FAKE'));
     }
-
-//    public function testRouteWithWrongPathWithControllerWithNoExistingMethod(): void
-//    {
-//        $router = $this->getRouter();
-//        $this->assertSame('Error 404 : Not Found', $router->dispatch('/test-no-method', 'GET'));
-//    }
-//
-//    public function testRouteWithBadMethodWithControllerWithNoExistingMethod(): void
-//    {
-//        $router = $this->getRouter();
-//        $this->assertSame('Error 405 : Forbidden method', $router->dispatch('/test-no-method', 'FAKE'));
-//    }
 
     public function testRouteWithController(): void
     {

@@ -7,7 +7,6 @@
          colors="true"
          bootstrap="vendor/autoload.php"
          verbose="true"
-         testdox="true"
 >
     <php>
         <ini name="error_reporting" value="-1" />

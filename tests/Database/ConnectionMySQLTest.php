@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace Lucario\Tests\Database;
 
 use Lucario\Database\ConnectionMySQL;
 use PHPUnit\Framework\TestCase;

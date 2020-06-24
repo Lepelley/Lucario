@@ -33,10 +33,9 @@ abstract class AbstractRepository
         try {
             $query = $this->pdo->prepare("INSERT INTO {$this->table} ($fields) VALUES ($values)");
             $query->execute($data);
-
             $id = $this->pdo->lastInsertId();
 
-            return is_numeric($id) ? (int) $id : $id;
+            return $id ?? null;
         } catch (\PDOException $error) {
             throw new DatabaseException(
                 sprintf(
@@ -46,5 +45,22 @@ abstract class AbstractRepository
                 )
             );
         }
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return mixed
+     */
+    public function getWithId(int $id)
+    {
+        $query = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id = ?");
+        $query->execute([$id]);
+
+        if ($this->entity) {
+            return $query->fetchObject($this->entity) ?? false;
+        }
+
+        return $query->fetch() ?? false;
     }
 }

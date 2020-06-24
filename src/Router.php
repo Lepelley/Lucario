@@ -4,6 +4,7 @@ namespace Lucario;
 
 use FastRoute;
 use FastRoute\Dispatcher;
+use Lucario\Controller\HttpErrorController;
 
 class Router
 {
@@ -44,20 +45,9 @@ class Router
 
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                if (method_exists('App\Controller\ErrorController', 'notFound')) {
-                    return call_user_func([new \App\Controller\ErrorController(), 'notFound']);
-                } else {
-                    http_response_code(404);
-                    return 'Error 404 : Not Found';
-                }
+                return call_user_func([new HttpErrorController(), 'notFound']);
             case Dispatcher::METHOD_NOT_ALLOWED:
-                $allowedMethods = $routeInfo[1];
-                if (method_exists('App\Controller\ErrorController', 'methodForbidden')) {
-                    return call_user_func([new \App\Controller\ErrorController(), 'methodForbidden']);
-                } else {
-                    http_response_code(405);
-                    return 'Error 405 : Forbidden method';
-                }
+                return call_user_func([new HttpErrorController(), 'methodNotAllowed']);
             case Dispatcher::FOUND:
                 // Je vérifie si mon parametre est une chaine de caractere
                 $method = [];
