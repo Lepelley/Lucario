@@ -30,8 +30,15 @@ class SessionArray implements SessionInterface
         return $this;
     }
 
-    public function delete(string $name): self
+    public function delete(?string $name = null): self
     {
+        if (null === $name) {
+            unset($this->session);
+            $this->session = [];
+
+            return $this;
+        }
+
         if (array_key_exists($name, $this->session)) {
             unset($this->session[$name]);
         }

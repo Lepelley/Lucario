@@ -20,7 +20,7 @@ interface SessionInterface
      */
     public function set(string $name, $value = null): self;
 
-    public function delete(string $name): self;
+    public function delete(?string $name = null): self;
 
     public function getAll(): array;
 }

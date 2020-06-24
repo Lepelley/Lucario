@@ -32,6 +32,12 @@ abstract class AbstractRepository
 
         try {
             $query = $this->pdo->prepare("INSERT INTO {$this->table} ($fields) VALUES ($values)");
+            if (false === $query) {
+                throw new DatabaseException(sprintf(
+                    'Something went wrong with your SQL request : %s',
+                    json_encode($data)
+                ));
+            }
             $query->execute($data);
             $id = $this->pdo->lastInsertId();
 

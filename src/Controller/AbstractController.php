@@ -13,7 +13,7 @@ class AbstractController
     protected Environment $templateEngine;
     protected array $errors;
     private ?SessionInterface $session;
-    private $csrfToken;
+    private ?string $csrfToken;
 
     public function __construct()
     {

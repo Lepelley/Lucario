@@ -21,7 +21,7 @@ class UserRepository extends AbstractRepository
         $pdo->exec(
             'CREATE TABLE users (
                 id INT(6) NOT NULL,
-                name VARCHAR(255) NOT NULL
+                name VARCHAR(20) NOT NULL
             )'
         );
     }

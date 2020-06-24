@@ -36,4 +36,11 @@ class SessionTest extends TestCase
         $session->delete('test4');
         $this->assertNull($session->get('test4'));
     }
+
+    public function testCanDeleteAll(): void
+    {
+        $session = new Session();
+        $session->set('test5', 'test5')->delete()->set('test6', 'test6');
+        $this->assertSame('test6', $session->get('test6'));
+    }
 }

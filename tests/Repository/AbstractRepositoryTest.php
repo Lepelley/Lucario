@@ -14,7 +14,6 @@ class AbstractRepositoryTest extends TestCase
         $repository = new UserRepository();
         $repository->create(['id' => 1, 'name' => 'Vincent']);
         $user = $repository->getWithId(1);
-//        $this->assertSame(['id' => '1', 'name' => 'Vincent'], $user);
         $this->assertSame(['id' => '1', 'name' => 'Vincent'], ['id' => $user->getId(), 'name' => $user->getName()]);
     }
 
@@ -52,24 +51,13 @@ class AbstractRepositoryTest extends TestCase
         $this->assertFalse($repository->getWithId(1));
     }
 
-//    /**
-//     * @runInSeparateProcess
-//     */
-//    public function testCreateCanThrowDatabaseException(): void
-//    {
-//        $repository = new class extends AbstractRepository{
-//            public function __construct()
-//            {
-//                $pdo = ConnectionMySQL::get([
-//                    'DSN' => 'sqlite::memory:',
-//                    'LOGIN' => '',
-//                    'PASSWORD' => '',
-//                ]);
-//                parent::__construct($pdo);
-//                $this->table = 'users';
-//            }
-//        };
-//        $this->expectException(DatabaseException::class);
-//        var_dump($repository->create(['id' => 1, 'name' => 'Test']));
-//    }
+    /**
+     * @runInSeparateProcess
+     */
+    public function testCreateCanThrowDatabaseException(): void
+    {
+        $repository = new UserRepository();
+        $this->expectException(DatabaseException::class);
+        var_dump($repository->create([]));
+    }
 }

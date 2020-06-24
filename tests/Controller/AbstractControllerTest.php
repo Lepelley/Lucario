@@ -19,6 +19,7 @@ class AbstractControllerTest extends TestCase
         $controller = new class extends AbstractController {
             public function testFlash(SessionInterface $session): void
             {
+                $this->generateCsrfToken();
                 $this->setSession($session);
                 $this->addFlash('error', 'Test error');
             }

@@ -35,8 +35,14 @@ class Session implements SessionInterface
         return $this;
     }
 
-    public function delete(string $name): self
+    public function delete(?string $name = null): self
     {
+        if (null === $name) {
+            session_destroy();
+            session_start();
+
+            return $this;
+        }
         if (array_key_exists($name, $_SESSION)) {
             unset($_SESSION[$name]);
         }
