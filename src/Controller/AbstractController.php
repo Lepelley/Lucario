@@ -84,7 +84,7 @@ class AbstractController
     protected function addFlash(string $category, string $message): void
     {
         if (null === $this->session()->get('_flashbag')) {
-            $this->session()->set('_flashbag',[$category => $message]);
+            $this->session()->set('_flashbag',[$category => [$message]]);
 
             return;
         }
@@ -92,7 +92,7 @@ class AbstractController
             '_flashbag',
             array_merge(
                 $this->session()->get('_flashbag'),
-                [$category => $message]
+                [$category => [$message]]
             )
         );
     }

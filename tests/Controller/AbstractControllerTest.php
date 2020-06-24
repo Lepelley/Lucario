@@ -24,7 +24,7 @@ class AbstractControllerTest extends TestCase
             }
         };
         $controller->testFlash($session);
-        $this->assertSame(['error' => 'Test error'], $session->get('_flashbag'));
+        $this->assertSame(['error' => ['Test error']], $session->get('_flashbag'));
     }
 
     public function testAddFlashWithTwoMessages(): void
@@ -40,7 +40,7 @@ class AbstractControllerTest extends TestCase
             }
         };
         $controller->testFlash($session);
-        $this->assertSame(['error' => 'Test error', 'info' => 'Test info error'], $session->get('_flashbag'));
+        $this->assertSame(['error' => ['Test error'], 'info' => ['Test info error']], $session->get('_flashbag'));
     }
 
 //    public function testRedirectToRoute(): void
