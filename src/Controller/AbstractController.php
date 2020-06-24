@@ -13,11 +13,14 @@ class AbstractController
     protected Environment $templateEngine;
     protected array $errors;
     private ?SessionInterface $session;
-    private string $csrfToken;
+    private $csrfToken;
 
     public function __construct()
     {
+        $this->errors = [];
         $this->session = null;
+        $this->csrfToken = $this->session()->get('securityCsrfToken');
+
         $this->templatesDirectory = defined('TEMPLATE_PATH') ? TEMPLATE_PATH : dirname(__DIR__, 4) . '/templates';
         $loader = new FilesystemLoader($this->templatesDirectory);
         $this->templateEngine = new Environment($loader);
