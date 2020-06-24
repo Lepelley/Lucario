@@ -1,6 +1,6 @@
 <?php
 
-namespace Lucario;
+namespace Lucario\Core;
 
 use FastRoute;
 use FastRoute\Dispatcher;

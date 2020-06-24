@@ -1,6 +1,6 @@
 <?php
 
-namespace Lucario;
+namespace Lucario\Session;
 
 interface SessionInterface
 {

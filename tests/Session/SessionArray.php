@@ -1,8 +1,8 @@
 <?php
 
-namespace Lucario\Tests;
+namespace Lucario\Tests\Session;
 
-use Lucario\SessionInterface;
+use Lucario\Session\SessionInterface;
 
 class SessionArray implements SessionInterface
 {

@@ -3,7 +3,7 @@
 namespace Lucario\Tests;
 
 use FastRoute\RouteCollector;
-use Lucario\Router;
+use Lucario\Core\Router;
 use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase

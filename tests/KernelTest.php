@@ -2,8 +2,8 @@
 
 namespace Lucario\Tests;
 
-use Lucario\Kernel;
-use Lucario\Router;
+use Lucario\Core\Kernel;
+use Lucario\Core\Router;
 use PHPUnit\Framework\TestCase;
 
 class KernelTest extends TestCase

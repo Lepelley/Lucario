@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use Lucario\Controller\AbstractController;
-use Lucario\SessionInterface;
-use Lucario\Tests\SessionArray;
+use Lucario\Session\SessionInterface;
+use Lucario\Tests\Session\SessionArray;
 use PHPUnit\Framework\TestCase;
 
 /**

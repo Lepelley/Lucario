@@ -2,8 +2,8 @@
 
 namespace Lucario\Controller;
 
-use Lucario\Session;
-use Lucario\SessionInterface;
+use Lucario\Session\Session;
+use Lucario\Session\SessionInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 

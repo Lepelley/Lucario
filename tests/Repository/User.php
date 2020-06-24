@@ -2,7 +2,9 @@
 
 namespace Lucario\Tests\Repository;
 
-class User
+use Lucario\Entity\AbstractEntity;
+
+class User extends AbstractEntity
 {
     /**
      * @var int|string|null

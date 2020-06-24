@@ -1,8 +1,8 @@
 <?php
 
-namespace Lucario\Tests;
+namespace Lucario\Tests\Session;
 
-use Lucario\Session;
+use Lucario\Session\Session;
 use PHPUnit\Framework\TestCase;
 
 /**
