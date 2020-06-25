@@ -61,28 +61,7 @@ abstract class AbstractRepository
      */
     public function findAll()
     {
-        $query = $this->pdo->prepare("SELECT * FROM {$this->table}");
-        if (false == $query) {
-            throw new DatabaseException(
-                sprintf('Error during the creation of your query with the %s table', htmlspecialchars($this->table))
-            );
-        }
-        $query->execute([]);
-
-        if (null == $query || false == $query) {
-            return [];
-        }
-
-        if ($this->entity) {
-            $items = [];
-            while ($item = $query->fetchObject($this->entity)) {
-                $items[] = $item;
-            }
-        } else {
-            $items = $query->fetchAll();
-        }
-
-        return $items;
+        return $this->queryAndFetchAll("SELECT * FROM {$this->table}");
     }
 
     /**
@@ -100,5 +79,39 @@ abstract class AbstractRepository
         }
 
         return $query->fetch() ?? false;
+    }
+
+    /**
+     * @param string $sql
+     * @param array<string,mixed> $params
+     *
+     * @return array|false
+     *
+     * @throws DatabaseException
+     */
+    protected function queryAndFetchAll($sql, $params = [])
+    {
+        $query = $this->pdo->prepare($sql);
+        if (false == $query) {
+            throw new DatabaseException(
+                sprintf('Error during the creation of your query with the %s table', htmlspecialchars($this->table))
+            );
+        }
+        $query->execute($params);
+
+        if (null == $query || false == $query) {
+            return [];
+        }
+
+        if ($this->entity) {
+            $items = [];
+            while ($item = $query->fetchObject($this->entity)) {
+                $items[] = $item;
+            }
+        } else {
+            $items = $query->fetchAll();
+        }
+
+        return $items;
     }
 }
