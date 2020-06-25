@@ -67,6 +67,19 @@ abstract class AbstractRepository
     /**
      * @param int $id
      *
+     * @return void
+     */
+    public function delete(int $id): void
+    {
+        $query = $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = ?");
+        $query->execute([$id]);
+
+        return;
+    }
+
+    /**
+     * @param int $id
+     *
      * @return mixed
      */
     public function getWithId(int $id)

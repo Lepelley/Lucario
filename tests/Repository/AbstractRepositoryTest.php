@@ -130,4 +130,30 @@ class AbstractRepositoryTest extends TestCase
         $this->expectException(DatabaseException::class);
         $this->assertEmpty($repository->findAll());
     }
+
+    public function testDeleteWithBadRow(): void
+    {
+        $repository = new UserRepository();
+        $repository->create(['id' => 1, 'name' => 'Vincent']);
+        $repository->delete(2);
+        if (false === $items = $repository->findAll()) {
+            $this->assertFalse(true);
+
+            return;
+        }
+        $this->assertContainsOnlyInstancesOf(User::class, $items);
+    }
+
+    public function testDelete(): void
+    {
+        $repository = new UserRepository();
+        $repository->create(['id' => 1, 'name' => 'Vincent']);
+        $repository->delete(1);
+        if (false === $items = $repository->findAll()) {
+            $this->assertFalse(true);
+
+            return;
+        }
+        $this->assertEmpty($items);
+    }
 }
