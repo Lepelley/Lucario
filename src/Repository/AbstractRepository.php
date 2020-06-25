@@ -3,7 +3,6 @@
 namespace Lucario\Repository;
 
 use Lucario\Database\DatabaseException;
-use Lucario\Entity\AbstractEntity;
 
 abstract class AbstractRepository
 {
@@ -95,6 +94,42 @@ abstract class AbstractRepository
     }
 
     /**
+     * @param int                  $id
+     * @param array<string,string> $data
+     *
+     * @return void
+     *
+     * @throws DatabaseException
+     */
+    public function update(int $id, array $data): void
+    {
+        if (empty($data)) {
+            throw new DatabaseException(
+                \sprintf("Impossible to update a record in %s table", $this->table)
+            );
+        }
+        $sqlFields = [];
+        foreach ($data as $key => &$value) {
+            $sqlFields[] = "$key = :$key";
+            if ('null' === $value) {
+                $value = null;
+            }
+        }
+
+        try {
+            $query = $this->pdo->prepare("UPDATE {$this->table} SET ".implode(', ', $sqlFields)." WHERE id = :id");
+            if (false == $query) {
+                return;
+            }
+            $query->execute(array_merge($data, ['id' => $id]));
+        } catch (\PDOException $error) {
+            throw new DatabaseException(
+                \sprintf("Impossible to update a record in {$this->table} table : %s", $error->getMessage())
+            );
+        }
+    }
+
+    /**
      * @param string $sql
      * @param array<string,mixed> $params
      *
@@ -112,9 +147,9 @@ abstract class AbstractRepository
         }
         $query->execute($params);
 
-        if (null == $query || false == $query) {
-            return [];
-        }
+//        if (null == $query || false == $query) {
+//            return [];
+//        }
 
         if ($this->entity) {
             $items = [];

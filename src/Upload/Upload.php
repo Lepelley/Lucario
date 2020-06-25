@@ -76,7 +76,7 @@ class Upload
         // On vérifie correctement que l'upload a réussi
         // (le code error 0 nous indique déjà que oui)
         // mais ce double controle
-        if(!is_uploaded_file($file['tmp_name'])) {
+        if(!$this->isUploadedFile($file['tmp_name'])) {
             throw new UploadException("Le fichier est introuvable");
         }
         // On controle le type soumis par le client (mais cela ne s'écurise pas le contenu)
@@ -94,5 +94,10 @@ class Upload
         }
 
         return $file;
+    }
+
+    public function isUploadedFile($file)
+    {
+        return is_uploaded_file($file);
     }
 }

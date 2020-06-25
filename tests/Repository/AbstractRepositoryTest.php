@@ -156,4 +156,52 @@ class AbstractRepositoryTest extends TestCase
         }
         $this->assertEmpty($items);
     }
+
+    public function testUpdateCanThrowDatabaseExceptionIfDataIsEmpty(): void
+    {
+        $repository = new UserRepository();
+        $this->expectException(DatabaseException::class);
+        $repository->update(1, []);
+    }
+
+    public function testUpdateWithStringNullValue(): void
+    {
+        $repository = new UserRepository();
+        $repository->update(1, ['name' => 'null']);
+        $this->assertSame(2, 1+1);
+    }
+
+    public function testUpdate(): void
+    {
+        $repository = new UserRepository();
+        $repository->create(['id' => 1, 'name' => 'Vincent']);
+        $repository->update(1, ['name' => 'Vincent Test']);
+        $this->assertSame('Vincent Test', $repository->getWithId(1)->getName());
+    }
+
+    public function testUpdateDoesNothingIfTableIsMistyped(): void
+    {
+        $repository = new class extends AbstractRepository {
+            public function __construct()
+            {
+                $pdo = ConnectionMySQL::get([
+                    'DSN' => 'sqlite::memory:',
+                    'LOGIN' => '',
+                    'PASSWORD' => '',
+                ]);
+                parent::__construct($pdo);
+                $this->entity = User::class;
+                $this->table = 'users_bug';
+
+                $pdo->exec(
+                    'CREATE TABLE users (
+                        id INT(6) NOT NULL,
+                        name VARCHAR(20) NOT NULL
+                   )'
+                );
+            }
+        };
+        $repository->update(1, ['name' => 'Vincent Test']);
+        $this->assertSame(2, 1+1);
+    }
 }
