@@ -3,6 +3,7 @@
 namespace Lucario\Repository;
 
 use Lucario\Database\DatabaseException;
+use Lucario\Entity\AbstractEntity;
 
 abstract class AbstractRepository
 {
@@ -51,6 +52,37 @@ abstract class AbstractRepository
                 )
             );
         }
+    }
+
+    /**
+     * @return array|false
+     *
+     * @throws DatabaseException
+     */
+    public function findAll()
+    {
+        $query = $this->pdo->prepare("SELECT * FROM {$this->table}");
+        if (false == $query) {
+            throw new DatabaseException(
+                sprintf('Error during the creation of your query with the %s table', htmlspecialchars($this->table))
+            );
+        }
+        $query->execute([]);
+
+        if (null == $query || false == $query) {
+            return [];
+        }
+
+        if ($this->entity) {
+            $items = [];
+            while ($item = $query->fetchObject($this->entity)) {
+                $items[] = $item;
+            }
+        } else {
+            $items = $query->fetchAll();
+        }
+
+        return $items;
     }
 
     /**
