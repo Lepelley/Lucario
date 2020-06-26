@@ -31,7 +31,14 @@ class AbstractController
         $sessionVariables = $this->session()->getAll();
         $this->session()->delete('_flashbag');
 
-        return $this->templateEngine->render($view.'.html.twig', array_merge(['session' => $sessionVariables], $vars));
+        return $this->templateEngine->render(
+            $view.'.html.twig',
+            array_merge($vars, [
+                'session'       => $sessionVariables,
+                'errors'        => $this->errors,
+                'current_page'  => $_SERVER["PATH_INFO"]??'/'
+            ])
+        );
     }
 
     protected function isSubmitted(): bool
