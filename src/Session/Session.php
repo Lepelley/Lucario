@@ -6,10 +6,7 @@ class Session implements SessionInterface
 {
     public function __construct()
     {
-        $isStarted = false;
-        if (php_sapi_name() !== 'cli') {
-            $isStarted = (session_status() === PHP_SESSION_ACTIVE);
-        }
+        $isStarted = ('cli' !== php_sapi_name()) ? (session_status() === PHP_SESSION_ACTIVE) : false;
 
         if (false === $isStarted) {
             session_start();

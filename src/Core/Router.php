@@ -42,12 +42,17 @@ class Router
         }
 
         $routeInfo = $dispatcher->dispatch($method, rawurldecode($uri));
-
+        $method = [];
+        $params = [];
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                return call_user_func([new HttpErrorController(), 'notFound']);
+                $method = [new HttpErrorController(), 'notFound'];
+                break;
+
             case Dispatcher::METHOD_NOT_ALLOWED:
-                return call_user_func([new HttpErrorController(), 'methodNotAllowed']);
+                $method = [new HttpErrorController(), 'methodNotAllowed'];
+                break;
+
             case Dispatcher::FOUND:
                 // Je vérifie si mon parametre est une chaine de caractere
                 $method = [];
@@ -71,7 +76,11 @@ class Router
                     throw new \Exception(sprintf('Not callable'));
                 }
 
-                return call_user_func_array($method, $routeInfo[2]);
+                $params = $routeInfo[2];
+
+                break;
         }
+
+        return call_user_func_array($method, $params);
     }
 }

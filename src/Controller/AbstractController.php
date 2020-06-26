@@ -81,6 +81,8 @@ class AbstractController
      * @param string $url
      *
      * @return void
+     *
+     * @codeCoverageIgnore
      */
     protected function redirectToRoute(string $url): void
     {

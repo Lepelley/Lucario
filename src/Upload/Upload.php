@@ -76,6 +76,9 @@ class Upload
         // On vérifie correctement que l'upload a réussi
         // (le code error 0 nous indique déjà que oui)
         // mais ce double controle
+        /**
+         * @codeCov
+         */
         if(!$this->isUploadedFile($file['tmp_name'])) {
             throw new UploadException("Le fichier est introuvable");
         }

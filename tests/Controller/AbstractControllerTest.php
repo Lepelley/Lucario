@@ -94,4 +94,18 @@ class AbstractControllerTest extends TestCase
         };
         $this->assertTrue($controller->testPost());
     }
+
+    public function testEncodePassword(): void
+    {
+        define('TEMPLATE_PATH', dirname(__DIR__).DIRECTORY_SEPARATOR.'templates');
+        $controller = new class extends AbstractController{
+            public function testEncodePassword(string $password): string
+            {
+                return $this->encodePassword($password);
+            }
+        };
+        $password = 'test_password';
+        $passwordEncoded = $controller->testEncodePassword($password);
+        $this->assertTrue(password_verify($password, $passwordEncoded));
+    }
 }

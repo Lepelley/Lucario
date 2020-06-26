@@ -10,8 +10,6 @@ class ConnectionMySQL
      * @param array<string,string> $credentials
      *
      * @return \PDO
-     *
-     * @throws DatabaseException
      */
     public static function get(array $credentials): \PDO
     {
@@ -20,21 +18,15 @@ class ConnectionMySQL
         $password = isset($credentials['PASSWORD']) ? $credentials['PASSWORD'] : '';
 
         if (null === self::$pdo) {
-            try {
-                self::$pdo = new \PDO(
-                    $dsn,
-                    $login,
-                    $password,
-                    [
-                        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-                        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                    ]
-                );
-            } catch (\Exception $error) {
-                throw new DatabaseException(
-                    \sprintf('Échec lors de la connexion à la base de données : %s, ', $error->getMessage())
-                );
-            }
+            self::$pdo = new \PDO(
+                $dsn,
+                $login,
+                $password,
+                [
+                    \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                ]
+            );
         }
 
         return self::$pdo;
