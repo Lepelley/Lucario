@@ -12,37 +12,12 @@ use PHPUnit\Framework\TestCase;
  */
 class AbstractRepositoryTest extends TestCase
 {
-    public function testCreateAndGetWithIdWithEntity(): void
+    public function testCreateAndGetWithId(): void
     {
         $repository = new UserRepository();
         $repository->create(['id' => 1, 'name' => 'Vincent']);
         $user = $repository->getWithId(1);
         $this->assertSame(['id' => '1', 'name' => 'Vincent'], ['id' => $user->getId(), 'name' => $user->getName()]);
-    }
-
-    public function testCreateAndGetWithIdWithoutEntity(): void
-    {
-        $repository = new class extends AbstractRepository{
-            public function __construct()
-            {
-                $pdo = ConnectionMySQL::get([
-                    'DSN' => 'sqlite::memory:',
-                    'LOGIN' => '',
-                    'PASSWORD' => '',
-                ]);
-                parent::__construct($pdo);
-                $this->table = 'users';
-
-                $pdo->exec(
-                    'CREATE TABLE users (
-                        id INT(6) NOT NULL,
-                        name VARCHAR(255) NOT NULL
-                    )'
-                );
-            }
-        };
-        $repository->create(['id' => 1, 'name' => 'Vincent']);
-        $this->assertSame(['id' => '1', 'name' => 'Vincent'], $repository->getWithId(1));
     }
 
     public function testGetCanReturnFalse(): void
@@ -55,7 +30,32 @@ class AbstractRepositoryTest extends TestCase
     {
         $repository = new UserRepository();
         $this->expectException(DatabaseException::class);
-        var_dump($repository->create([]));
+        $repository->create([]);
+    }
+
+    public function testCreateCanThrowDatabaseExceptionIfTableMistyped(): void
+    {
+        $repository = new class extends AbstractRepository{
+            public function __construct()
+            {
+                $pdo = ConnectionMySQL::get([
+                    'DSN' => 'sqlite::memory:',
+                    'LOGIN' => '',
+                    'PASSWORD' => '',
+                ]);
+                parent::__construct($pdo);
+                $this->table = 'usersMistyped';
+
+                $pdo->exec(
+                    'CREATE TABLE users (
+                        id INT(6) NOT NULL,
+                        name VARCHAR(255) NOT NULL
+                    )'
+                );
+            }
+        };
+        $this->expectException(DatabaseException::class);
+        $repository->create([]);
     }
 
     public function testFindAllReturnEmptyArray(): void
@@ -75,35 +75,6 @@ class AbstractRepositoryTest extends TestCase
             return;
         }
         $this->assertContainsOnlyInstancesOf(User::class, $items);
-    }
-
-    public function testFindAllCanReturnArrayOfArraysIfNoEntityDefined(): void
-    {
-        $repository = new class extends AbstractRepository{
-            public function __construct()
-            {
-                $pdo = ConnectionMySQL::get([
-                    'DSN' => 'sqlite::memory:',
-                    'LOGIN' => '',
-                    'PASSWORD' => '',
-                ]);
-                parent::__construct($pdo);
-                $this->table = 'users';
-
-                $pdo->exec(
-                    'CREATE TABLE users (
-                        id INT(6) NOT NULL,
-                        name VARCHAR(255) NOT NULL
-                    )'
-                );
-            }
-        };
-        $repository->create(['id' => 1, 'name' => 'Vincent']);
-        $repository->create(['id' => 2, 'name' => 'Kevin']);
-        $this->assertSame([
-            ['id' => '1', 'name' => 'Vincent'],
-            ['id' => '2', 'name' => 'Kevin'],
-        ], $repository->findAll() ?? []);
     }
 
     public function testFindAllCanThrowDatabaseExceptionIfTableMistyped(): void
@@ -128,7 +99,7 @@ class AbstractRepositoryTest extends TestCase
             }
         };
         $this->expectException(DatabaseException::class);
-        $this->assertEmpty($repository->findAll());
+        $repository->findAll();
     }
 
     public function testDeleteWithBadRow(): void
@@ -201,7 +172,32 @@ class AbstractRepositoryTest extends TestCase
                 );
             }
         };
+        $this->expectException(DatabaseException::class);
         $repository->update(1, ['name' => 'Vincent Test']);
-        $this->assertSame(2, 1+1);
+    }
+
+    public function testGetWithIdCanThrowDatabaseException(): void
+    {
+        $repository = new class extends AbstractRepository{
+            public function __construct()
+            {
+                $pdo = ConnectionMySQL::get([
+                    'DSN' => 'sqlite::memory:',
+                    'LOGIN' => '',
+                    'PASSWORD' => '',
+                ]);
+                parent::__construct($pdo);
+                $this->table = 'usersMistyped';
+
+                $pdo->exec(
+                    'CREATE TABLE users (
+                        id INT(6) NOT NULL,
+                        name VARCHAR(255) NOT NULL
+                    )'
+                );
+            }
+        };
+        $this->expectException(DatabaseException::class);
+        $repository->getWithId(1);
     }
 }

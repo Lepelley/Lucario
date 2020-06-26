@@ -32,12 +32,6 @@ abstract class AbstractRepository
 
         try {
             $query = $this->pdo->prepare("INSERT INTO {$this->table} ($fields) VALUES ($values)");
-            if (false == $query) {
-                throw new DatabaseException(sprintf(
-                    'Something went wrong with your SQL request : %s',
-                    json_encode($data)
-                ));
-            }
             $query->execute($data);
             $id = $this->pdo->lastInsertId();
 
@@ -83,14 +77,7 @@ abstract class AbstractRepository
      */
     public function getWithId(int $id)
     {
-        $query = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id = ?");
-        $query->execute([$id]);
-
-        if ($this->entity) {
-            return $query->fetchObject($this->entity) ?? false;
-        }
-
-        return $query->fetch() ?? false;
+        return $this->queryAndFetchOne("SELECT * FROM {$this->table} WHERE id = ?", [$id]);
     }
 
     /**
@@ -103,11 +90,6 @@ abstract class AbstractRepository
      */
     public function update(int $id, array $data): void
     {
-        if (empty($data)) {
-            throw new DatabaseException(
-                \sprintf("Impossible to update a record in %s table", $this->table)
-            );
-        }
         $sqlFields = [];
         foreach ($data as $key => &$value) {
             $sqlFields[] = "$key = :$key";
@@ -118,9 +100,6 @@ abstract class AbstractRepository
 
         try {
             $query = $this->pdo->prepare("UPDATE {$this->table} SET ".implode(', ', $sqlFields)." WHERE id = :id");
-            if (false == $query) {
-                return;
-            }
             $query->execute(array_merge($data, ['id' => $id]));
         } catch (\PDOException $error) {
             throw new DatabaseException(
@@ -139,27 +118,38 @@ abstract class AbstractRepository
      */
     protected function queryAndFetchAll($sql, $params = [])
     {
-        $query = $this->pdo->prepare($sql);
-        if (false == $query) {
+        try {
+            $query = $this->pdo->prepare($sql);
+            $query->setFetchMode(\PDO::FETCH_CLASS, $this->entity);
+            $query->execute($params);
+
+            return $query->fetchAll();
+        } catch (\PDOException $error) {
             throw new DatabaseException(
-                sprintf('Error during the creation of your query with the %s table', htmlspecialchars($this->table))
+                \sprintf("Impossible to update a record in {$this->table} table : %s", $error->getMessage())
             );
         }
-        $query->execute($params);
+    }
 
-//        if (null == $query || false == $query) {
-//            return [];
-//        }
+    /**
+     * @param string $sql
+     * @param array<string,mixed> $params
+     *
+     * @return array|false
+     *
+     * @throws DatabaseException
+     */
+    protected function queryAndFetchOne($sql, $params = [])
+    {
+        try {
+            $query = $this->pdo->prepare($sql);
+            $query->execute($params);
 
-        if ($this->entity) {
-            $items = [];
-            while ($item = $query->fetchObject($this->entity)) {
-                $items[] = $item;
-            }
-        } else {
-            $items = $query->fetchAll();
+            return $query->fetchObject($this->entity);
+        } catch (\PDOException $exception) {
+            throw new DatabaseException(
+                \sprintf("Impossible to update a record in {$this->table} table : %s", $exception->getMessage())
+            );
         }
-
-        return $items;
     }
 }
