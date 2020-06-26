@@ -106,8 +106,19 @@ class AbstractController
         );
     }
 
+    /**
+     * @param string $password
+     *
+     * @return string
+     *
+     * @throws \Exception
+     */
     protected function encodePassword(string $password): string
     {
-        return password_hash($password, PASSWORD_ARGON2I);
+        $encodedPassword = password_hash($password, PASSWORD_ARGON2I);
+
+        if (false === $encodedPassword) throw new \Exception('Problem during encoding');
+
+        return $encodedPassword;
     }
 }

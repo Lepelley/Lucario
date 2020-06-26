@@ -29,6 +29,7 @@
       "coverage": ".\\vendor\\bin\\phpunit --coverage-html var\\logs\\coverage"
     },
   "require": {
+    "php": ">=7.4",
     "nikic/fast-route": "^1.3",
     "twig/twig": "^3.0",
     "ext-pdo": "*"

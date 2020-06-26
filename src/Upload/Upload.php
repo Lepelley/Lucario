@@ -28,10 +28,10 @@ class Upload
     }
 
     /**
-     * @param array<string,string> $response   $_FILES['your_field']
+     * @param array<string,mixed> $response   $_FILES['your_field']
      * @param string               $uploadPath
      *
-     * @return string|bool
+     * @return string|false
      *
      * @throws UploadException
      */
@@ -41,7 +41,7 @@ class Upload
         $filenameParts = explode('.', $file['name']);
         $filename = sha1(uniqid()).'.'.$filenameParts[count($filenameParts) - 1];
 
-        if (false === move_uploaded_file($file['tmp_name'], $uploadPath.DIRECTORY_SEPARATOR.$filename)) {
+        if (false === move_uploaded_file($file['tmp_name'], $uploadPath.$filename)) {
             return false;
         }
 
@@ -61,33 +61,29 @@ class Upload
         if(false === isset($file["error"]) || $file["error"] !== 0) {
             throw new UploadException(sprintf("L'upload du fichier a échoué, erreur : %s", json_encode(($file['error']))));
         }
+
         if (empty($file["name"])) {
             throw new UploadException("Le fichier envoyé n'a pas un nom correct.");
         }
+
         if (empty($file["tmp_name"])) {
             throw new UploadException("L'upload du fichier a échoué.");
         }
+
         if (empty($file["type"])) {
             throw new UploadException("Le format du fichier ne convient pas.");
         }
 
         // En récupérant uniquement le basename on évite la faille directory Traversal
         $file["name"] = basename($file["name"]);
-        // On vérifie correctement que l'upload a réussi
-        // (le code error 0 nous indique déjà que oui)
-        // mais ce double controle
-        /**
-         * @codeCov
-         */
-        if(!$this->isUploadedFile($file['tmp_name'])) {
-            throw new UploadException("Le fichier est introuvable");
-        }
+
         // On controle le type soumis par le client (mais cela ne s'écurise pas le contenu)
         if(!array_key_exists($file['type'], $typeAllowed)) {
             throw new UploadException("Le format du fichier ne convient pas.");
         }
+
         // controle mime-type du fichier
-        if(!array_key_exists((string) mime_content_type($file['tmp_name']), $typeAllowed)) {
+        if(('cli' !== php_sapi_name()) && !array_key_exists((string) mime_content_type($file['tmp_name']), $typeAllowed)) {
             throw new UploadException("Le format du fichier ne convient pas.");
         }
 
@@ -96,11 +92,13 @@ class Upload
             throw new UploadException("Le fichier envoyé n'a pas un nom correct.");
         }
 
-        return $file;
-    }
+        // On vérifie correctement que l'upload a réussi
+        // (le code error 0 nous indique déjà que oui)
+        // mais ce double controle
+        if(('cli' !== php_sapi_name()) && !is_uploaded_file($file['tmp_name'])) {
+            throw new UploadException("Le fichier est introuvable");
+        }
 
-    public function isUploadedFile($file)
-    {
-        return is_uploaded_file($file);
+        return $file;
     }
 }

@@ -56,6 +56,8 @@ class Router
             case Dispatcher::FOUND:
                 // Je vérifie si mon parametre est une chaine de caractere
                 $method = [];
+                $params = $routeInfo[2];
+
                 if (is_string($routeInfo[1])) {
                     // si dans la chaine reçu on trouve les ::
                     if (strpos($routeInfo[1], '::') !== false) {
@@ -71,16 +73,12 @@ class Router
                     // dans le cas ou c'est appelable (closure (fonction anonyme) par exemple)
                     $method = $routeInfo[1];
                 }
-                // on execute avec call_user_func_array
-                if (false === is_callable($method)) {
-                    throw new \Exception(sprintf('Not callable'));
-                }
-
-                $params = $routeInfo[2];
-
-                break;
         }
 
-        return call_user_func_array($method, $params);
+        if (is_callable($method)) {
+            return call_user_func_array($method, $params);
+        }
+
+        throw new \Exception(sprintf('Not callable'));
     }
 }

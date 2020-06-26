@@ -120,10 +120,14 @@ abstract class AbstractRepository
     {
         try {
             $query = $this->pdo->prepare($sql);
-            $query->setFetchMode(\PDO::FETCH_CLASS, $this->entity);
             $query->execute($params);
 
-            return $query->fetchAll();
+            $items = [];
+            while ($item = $query->fetchObject($this->entity)) {
+                $items[] = $item;
+            }
+
+            return $items;
         } catch (\PDOException $error) {
             throw new DatabaseException(
                 \sprintf("Impossible to update a record in {$this->table} table : %s", $error->getMessage())
@@ -133,7 +137,7 @@ abstract class AbstractRepository
 
     /**
      * @param string $sql
-     * @param array<string,mixed> $params
+     * @param array<string,mixed>|array<mixed> $params
      *
      * @return array|false
      *
